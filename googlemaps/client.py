@@ -43,10 +43,10 @@ _X_GOOG_MAPS_EXPERIENCE_ID = "X-Goog-Maps-Experience-ID"
 _USER_AGENT = "GoogleGeoApiClientPython/%s" % googlemaps.__version__
 _DEFAULT_BASE_URL = "https://maps.googleapis.com"
 
-_RETRIABLE_STATUSES = set([500, 503, 504])
+_RETRIABLE_STATUSES = {500, 503, 504}
 
 
-class Client(object):
+class Client:
     """Performs requests to the Google Maps API web services."""
 
     def __init__(self, key=None, client_id=None, client_secret=None,
@@ -130,13 +130,11 @@ class Client(object):
             raise ValueError("Invalid API key provided.")
 
         if channel:
-            if not client_id:
-                raise ValueError("The channel argument must be used with a "
-                                 "client ID")
             if not re.match("^[a-zA-Z0-9._-]*$", channel):
                 raise ValueError("The channel argument must be an ASCII "
                     "alphanumeric string. The period (.), underscore (_)"
-                    "and hyphen (-) characters are allowed.")
+                    "and hyphen (-) characters are allowed. If used without "
+                    "client_id, it must be 0-999.")
 
         self.session = requests.Session()
         self.key = key
